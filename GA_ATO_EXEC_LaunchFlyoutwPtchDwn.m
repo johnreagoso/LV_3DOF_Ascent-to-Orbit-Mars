@@ -7,28 +7,29 @@ clearvars -except select_no distro_option_output     %clear all;
 
 %% UI Inputs:
 str1    = {'Select preferred GA Selection option:'};%; 'single selection'};
-S1      = {'Roulette-Wheel';'Tournament-Selection'; 'Rank-Selection'};
+S1      = {'Tournament-Selection'; 'Roulette-Wheel'; 'Rank-Selection'};
 %select_output  = listdlg('PromptString', str1, 'ListSize', [200 200], 'ListString', S1, 'SelectionMode','single');
 
-select = S1{select_no};
-%select = S1{3};
+%select = S1{select_no};
+select = S1{3};
 
 str2    = {'Select preferred GA Allele Crossover option:'};%; 'single selection'};
 S2      = {'Uniform'; 'Single-Segment'; 'Double-Segment'};
 % distro_option_output = listdlg('PromptString', str2, 'ListSize', [200 200], 'ListString', S2, 'SelectionMode','single');
 
-distro_option = S2{distro_option_output};
-%distro_option = S2{1};
+%distro_option = S2{distro_option_output};
+distro_option = S2{1};
 
 %% Global List for Computations:
 global input_list; input_list = {};
 global dice_roll_int
 global max_ballast max_coast_time elite_operator 
 global maxQe_add Qe_StartBase Az_StartBase maxAz_sub
-global payload %orbitMarker TperiodSecs 
+global payload 
 global univ_marker univ_bit
 global target_LMO_alt;
 global target_LMO_incl;
+global target_LMO_e
 global max_pitchdwn max_pitchdwn_no pitch_marker
 
 %% Mars Target:
@@ -38,25 +39,22 @@ global max_pitchdwn max_pitchdwn_no pitch_marker
 
 target_LMO_alt  = 380.0; % km 
 target_LMO_incl = 27.0;  % deg
+target_LMO_e    = 0.0;
 
 %% Universal markers for Qe, Az decimal quarters:   
 univ_marker = [0 0; 1 0.25;  2 0.50; 3 0.75];
 univ_bit    = {'00';'01';'10';'11'};
 
 %% Payload (in kg):
- payload = 16;
+payload = 16;
 
 %% Orbit Determine Triggers for Main Body:
-%orbitMarker = 0;    TperiodSecs = 0.0;
-%highFit = 0.0;
-%mutateHelp = 20.00;
-
 elite_operator = 'yes'; 
 %Dec2Bin: 7 ... 3 digits, 15 ... 4 digits, 31 ... 5 digits, 63 ... 6
 %digits, 127 ... 7 digits, 255 ... 8 digits, 511 ... 9 digits
 
 %% Min Qe 
- Qe_StartBase   = 58.0;   
+ Qe_StartBase   = 57.0;   
  %max_pitchdwn = 0.20;
  max_pitchdwn_no = 63;
 
@@ -72,7 +70,7 @@ elite_operator = 'yes';
 pitch_marker = rescale(1:1:max_pitchdwn_no, 0, 0.2);                   
 
  %% Launch Vehicle Mass Metrics
-dice_roll_int    = 2; 
+dice_roll_int    = 2; %this ensures that each bit is mutated at a rate of 1/50.. 
 PopulationNumber = 100;
 J_COST_MAX       = 0.00;
 
@@ -135,8 +133,7 @@ J_COST_MAX       = 0.00;
             x_inputs(3) = coast2;                   x_inputs(4) = pitchdwn;
             
             disp(x_inputs);
-            %x_inputs = [82.00         70.00        489.00          0.18];
-            output = GA_OrbitInsert_Call3DOF_QeAzCstTimePitch_LaunchFlyout(x_inputs);
+            output = GA_ATO_Call3DOF(x_inputs);
 
             score       = output(1);  % this is a quantitative representation of the traj 'miss', bigger J, worse orbit                 
             e           = output(2);           
@@ -179,19 +176,12 @@ J_COST_MAX       = 0.00;
     end
 
     ga_run_count = 1;
-    
-    while ga_run_count <= 200
+    while ga_run_count <= 100
         fprintf('GA Run Count: %i\n', ga_run_count);
         disp(ga_run_count);
 
-        %[J_cost_avg, J_cost_max(ga_run_count), TrajPopIndivNew ] = ...
-        %    GA_TrajShapeMainBody_QeAzWtCst(TrajPopIndiv, select, distro_option, ga_run_count);
-
         [J_COST_AVG, J_COST_MAX(ga_run_count), TRAJPOP_INDV_NEW ] = ...
             GA_TRAJ_MAIN_BODY_QeAzWtCstPitchDwn(TRAJPOP_INDV, select, distro_option, ga_run_count);
-
-        %score_array(ga_run_count) = J_cost_max;
-        %Jcost_super = rescale(score_array);
 
         GA_Specs{ga_run_count} = {TRAJPOP_INDV_NEW  J_COST_AVG, J_COST_MAX};
         eval(['save',' ',mat_string,' ','GA_Specs']);
@@ -204,8 +194,8 @@ J_COST_MAX       = 0.00;
         fprintf('GA-run max: %0.4f\n ',J_COST_MAX); 
         disp('================================================');        disp('================================================');
 
-        if numel(J_COST_MAX) > 50
-            if J_COST_MAX(ga_run_count) == J_COST_MAX(ga_run_count-30)
+        if numel(J_COST_MAX) > 20
+            if J_COST_MAX(ga_run_count) == J_COST_MAX(ga_run_count-10)
                 break;
             end
         end
@@ -218,6 +208,4 @@ J_COST_MAX       = 0.00;
 
 clock_display = clock(); 
 disp(clock_display); 
-
-
 

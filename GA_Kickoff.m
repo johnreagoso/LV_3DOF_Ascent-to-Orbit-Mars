@@ -6,7 +6,7 @@ clc
 for ii = 1:1:3
     for jj = 1:1:3
     
-        for kk = 1:20
+        for kk = 1:6
             try
                 % OrbitInsertGA_TrajShape_LaunchFlyoutVer_VehConfig_v2(jj, ii);
                 % GA_ATO_EXEC_LaunchFlyout(jj,ii);

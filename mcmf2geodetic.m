@@ -5,9 +5,11 @@
 % based on its mars-centered-mars-fixed (planet-fixed) position (similar to
 % earth-center-earth-fixed 'ECEF')
 
-% Inputs: Rvector (3x1 vector) units: km
+% Inputs: Rvector (3x1 vector)/ units: km
 % Output: geodetic latitude,longitude and height
-%         latgd (rad), longd (rad), h (km)
+%         latgd(rad), longd(rad), h(km)
+
+% Reference: www.oc.nps.edu/oc2902w/coord/coordcvt.pdf
 
 function [latgd_return, longd_return, h] = mcmf2geodetic(Rvector)
     
@@ -29,7 +31,6 @@ function [latgd_return, longd_return, h] = mcmf2geodetic(Rvector)
     ii = 1; 
    
     z = Rvector(3);
-    
     delta_latgd = 1;
 
     while delta_latgd > 1.0E-10  % will cycle through until computed latgd iterative delta < 1E-10 (rad)
@@ -43,10 +44,10 @@ function [latgd_return, longd_return, h] = mcmf2geodetic(Rvector)
         latgd(ii+1) = atan((z/p)*(1 - (mars_e^2)*Rn/(Rn+h))^-1);
     
         delta_latgd = abs(latgd(ii+1) - latgd(ii));
+
         ii = ii + 1;
 
     end
 
     latgd_return = latgd(ii);
-
 end

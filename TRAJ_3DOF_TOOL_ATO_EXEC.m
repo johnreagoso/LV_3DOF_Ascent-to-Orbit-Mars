@@ -1,9 +1,5 @@
 function [output_array] = TRAJ_3DOF_TOOL_ATO_EXEC(x0) 
 
-% x0(1) = 84.500829;
-% x0(2) = 71.721288;
-% x0(3) = 465.756155;
-% x0(4) = 0.0;
 
 %% Vehicle Config:
 m_shroud =  MAV_LaunchVehicle_Config.m_shroud;

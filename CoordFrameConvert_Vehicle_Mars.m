@@ -1,15 +1,14 @@
 %% ConvertStructure using LV_3DOF Output
 
-% Date created: April 2020 (John Reagoso, SPA SSAG)
-% Initial version finalized and committed to BitBucket (April 2020)
-% Updates:
-% 30 April 2020 - Added Mars-Centered-Mars-Fixed (ECEF) to Mars-Center-Inertial (ECI) Conversion functionality
-% 04 May 2020   - Added range and dynamic pressure/MaxQ computation functionality.
-% 14 May 2020   - Cleaned up code and structured various conversions into
-%                 subroutines called in the main script
-% 18 May 2020   - Updated acceleration computation subroutines and Draper-specific input 
+% Date created: 
 % 24 Oct 2024   - Updated/replaced Earth specific constants and logic with
 %                 Mars specific data
+
+% Note: this conversion script origin is for Earth centered trajectories (ECEF, ECI etc.). Any use of 'ECI', 'ECEF' etc. is a holdover 
+% and refers to MCI (Mars Centered Inertial) or MCMF (Mars Centered Mars Fixed) coordinate frames. Future versions of this script will
+% be modified accordingly. 
+
+% Reference for Mars physical/gravity parameters:  https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html 
 
 function [vehicleObj]= CoordFrameConvert_Vehicle_Mars(vehicleObjInput, frame_input)
 
@@ -19,7 +18,7 @@ function [vehicleObj]= CoordFrameConvert_Vehicle_Mars(vehicleObjInput, frame_inp
 
         vehicleObj = RL_prep(vehicleObjInput);
 
-%     %% Geodetic/Geocentric Constants: 
+%     %% Mars Geodetic/Geocentric Constants: 
         
            inv_f = mars_const.inv_f;
            % inv_f = 169.779286926995;
@@ -252,13 +251,6 @@ function [outputStruct] = ECEFtoRL_Convert(inputStruct)
               b     = a*(1-1/inv_f);
               %ecc   = sqrt(1-(b/a)^2); 
 
-%         marsSpheroid.Name = 'MarsGeodeticApprx';
-%         marsSpheroid.LengthUnit = 'meter';
-%         marsSpheroid.SemimajorAxis     = wgs84Ellipsoid('meters').SemimajorAxis*0.532;
-%         marsSpheroid.SemiminorAxis     = wgs84Ellipsoid('meters').SemiminorAxis*0.531;
-%         marsSpheroid.InverseFlattening = wgs84Ellipsoid('meters').InverseFlattening*1.76;
-%         marsSpheroid.Eccentricity      = 0.1105; %wgs84Ellipsoid('meters').Eccentricity*
-
         [lat_rad, long_rad, ~] = ecef2geodetic(inputStruct.E*1e3, inputStruct.F*1e3, inputStruct.G*1e3, referenceEllipsoid('Mars'));      
         lat_deg = lat_rad*180/pi;
         
@@ -420,15 +412,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
 function rho = mars_atm_density(altitude_ft)  %alt in km(s)
 
     if altitude_ft > 22960     
@@ -448,18 +431,6 @@ end
 
 
 function rho = mars_atm_density_kg_m3(altitude_km)  %alt in km(s)
-
-%     altitude_m = altitude_km*1e3;
-% 
-%     if altitude_m > 7000     
-%         temp  = -23.4 - 0.00222*altitude_m;
-%         press = 0.6990*exp(-0.00009*altitude_m);
-%     else 
-%         temp  = -31.0 - 0.000998*altitude_m;
-%         press = 0.699*exp(-0.00009*altitude_m);
-%     end
-% 
-% rho = press/(0.1921*(temp + 273.1));  %slugs/ft^3
 
     altitude_ft = altitude_km*3280.84; % km to feet 
     

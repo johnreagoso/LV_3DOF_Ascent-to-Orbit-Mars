@@ -1,6 +1,10 @@
 %% ConvertStructure
 % Reference for Mars physical/gravity parameters:  https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html 
 
+% Note: this conversion script origin is for Earth centered trajectories (ECEF, ECI etc.). Any use of 'ECI', 'ECEF' etc. is a holdover 
+% and refers to MCI (Mars Centered Inertial) or MCMF (Mars Centered Mars Fixed) coordinate frames. Future versions of this script will
+% be modified accordingly. 
+
 function [vehicleObj]= ConvertVehicleStructureTrial_Mars(vehicleObj, frame, units)
     
     if strcmp(frame, 'ecef') == 1 || strcmp(frame, 'ECEF') == 1 || strcmp(frame, 'edm') == 1

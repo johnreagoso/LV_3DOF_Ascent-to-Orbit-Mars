@@ -1,5 +1,9 @@
 function [outputStruct] = ECEFtoECI_Convert_Mars_StandAlone(inputStruct)
 
+% Note: this conversion script origin is for Earth centered trajectories (ECEF, ECI etc.). Any use of 'ECI', 'ECEF' etc. is a holdover 
+% and refers to MCI (Mars Centered Inertial) or MCMF (Mars Centered Mars Fixed) coordinate frames. Future versions of this script will
+% be modified accordingly. 
+
     if inputStruct.rotatingMars == 1 
         marsRotRate = Mars_GenPhysCons.OMEGA;  %rad/sec
     else

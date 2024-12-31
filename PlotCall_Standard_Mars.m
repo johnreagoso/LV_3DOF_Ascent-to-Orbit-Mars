@@ -41,17 +41,7 @@ text(425, 10, 'SRM-2 Ignition', 'FontSize', 8, 'FontWeight', 'bold', 'Color', 'b
 text(560, 15, 'SRM-2 Burnout', 'FontSize', 8, 'FontWeight', 'bold', 'Color', 'b'); 
 
 
-
-
-
-
-
-
-
-
-       PlottingUtilitySSAG(gcf, 'MAV_Baseline_QeVsTime');   
-
-    subplot(2, 4, 1)
+   subplot(2, 4, 1)
         plot(vehicleObj.time,    vehicleObj.altitude, 'linewidth', 1.5); grid on; title('Altitude vs. TOF');
         xlabel('sec'); ylabel('km');
         set(0,'defaultAxesFontSize',10);    ax = gca;    ax.FontSize = 10;    ax.FontWeight = 'bold';
@@ -103,9 +93,6 @@ text(560, 15, 'SRM-2 Burnout', 'FontSize', 8, 'FontWeight', 'bold', 'Color', 'b'
        xlabel('sec'); ylabel('deg'); %axis square;
        set(0,'defaultAxesFontSize',10);    ax = gca;    ax.FontSize = 10;    ax.FontWeight = 'bold';
    
-    %PlottingUtilitySSAG(gcf, 'LV_3DOFoutConvertedData');
-       
-      
 %% Close-In Plots- 'yes or no'. If yes, proceed... 
   
   if strcmp(closeInReq, 'yes') == 1
@@ -184,7 +171,6 @@ text(560, 15, 'SRM-2 Burnout', 'FontSize', 8, 'FontWeight', 'bold', 'Color', 'b'
            set(0,'defaultAxesFontSize',10);    ax = gca;    ax.FontSize = 10;    ax.FontWeight = 'bold';
            xlim([0, 65.2]);
 
-       PlottingUtilitySSAG(gcf, 'LV_3DOFoutConvertedData_CloseIn');
 
        %% Separate Close-In Plots: 
        figure;
@@ -213,7 +199,6 @@ text(560, 15, 'SRM-2 Burnout', 'FontSize', 8, 'FontWeight', 'bold', 'Color', 'b'
        text(2.2, 0.80, 'Pitchover Start', 'FontSize', 10, 'FontWeight', 'bold', 'Color', 'b');
        text(5.7, 0.70, 'Pitchover End', 'FontSize', 10, 'FontWeight', 'bold', 'Color', 'b');
 
-       PlottingUtilitySSAG(gcf, 'LV_3DOFoutConvertedData_BodyNormalVsTime');  
       
   end
   

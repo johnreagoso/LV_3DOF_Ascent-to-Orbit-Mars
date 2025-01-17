@@ -1,6 +1,6 @@
 
 function [aState] = Function_3DOF_MarsJ2(~, aStateInput, ~)
-%  State vector         --> [X   Y   Z   Vx  Vy  Vz  mass]
+%  State vector         --> [X   Y   Z   Vx  Vy  Vz  mass] (aStateInput)
 % (d/dt) State vector   --> [Vx  Vy  Vz  AccelX  AccelY  AccelZ  mass_dot] 
 
 Area = MAV_LaunchVehicle_Config.vArea;
@@ -70,7 +70,6 @@ Rpos = sqrt(Rpos_quant);  %meters
 %Rpos = sqrt(RadiusEq_km^2/(Rpos_denom));  %meters
 
 alt_km = norm([Rvector(1); Rvector(2); Rvector(3)]) - Rpos;  % km
-%alt_km = (norm(Rvector) - Mars_GenPhysCons.RE_EQ) + 1.9626;  
 
 Vvecfor_msec = Vvector*1000;                        % km/sec --> meters/sec
 

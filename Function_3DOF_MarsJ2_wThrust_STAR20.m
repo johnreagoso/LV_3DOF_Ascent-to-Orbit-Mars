@@ -31,20 +31,12 @@ J2 = 0.48416685e-03 *sqrt(5)*1.811;
 
 % J2- geocentric x-comp:
 ddxGeoJ2 = (-Mars_GenPhysCons.GM_KM/(norm(Rvector))^2)*(Mars_GenPhysCons.RE_EQ/(norm(Rvector)))^2 *(3*J2*sin(latgd)*cos(latgd));
-%ddxGeoJ2 = (-grav_accel)*(Mars_GenPhysCons.RE_EQ/(norm(Rvector)))^2 *(3*J2*sin(latgd)*cos(latgd));
 
 % J2- geocentric y-comp:
 ddyGeoJ2 = 0.0;
 
 % J2- geocentric z-comp:
 ddzGeoJ2 = (Mars_GenPhysCons.GM_KM/(norm(Rvector))^2)*(1 - (Mars_GenPhysCons.RE_EQ/norm(Rvector))^2 * 3/2 * J2*(3*sin(latgd)^2 - 1));
-
-% sinlatgd2 = 3*sin(latgd)^2 - 1;
-% ddzGeoJ2 = grav_accel - grav_accel*(Mars_GenPhysCons.RE_EQ/norm(Rvector))^2 * 3/2 * J2*sinlatgd2;
-
-
-%ddzGeoJ2 = (grav_accel - grav_accel*(Mars_GenPhysCons.RE_EQ/norm(Rvector))^2 * 3/2 * J2*(3*sin(latgd)^2 - 1));
-%ddzGeoJ2 = (grav_accel - grav_accel*(Mars_GenPhysCons.RE_EQ/norm(Rvector))^2 * 3/2 * J2*3*sin(latgd)^2 - J2);
 
 
 [ddxEciJ2, ddyEciJ2, ddzEciJ2] = ...
@@ -158,9 +150,6 @@ end
 
 function [outputStruct] = ECEFtoRL_Convert(inputStruct)
 
-%          inputStruct.E = inputStruct.E*1.0e3;          inputStruct.F = inputStruct.F*1.0e3;          inputStruct.G = inputStruct.G*1.0e3;   
-%          inputStruct.dE = inputStruct.dE*1.0e3;        inputStruct.dF = inputStruct.dF*1.0e3;        inputStruct.dG = inputStruct.dG*1.0e3;   
-
          Rx = inputStruct.E;  Ry = inputStruct.F;  Rz = inputStruct.G;
          Vx = inputStruct.dE; Vy = inputStruct.dF; Vz = inputStruct.dG;
     
@@ -170,12 +159,6 @@ function [outputStruct] = ECEFtoRL_Convert(inputStruct)
               b     = a*(1-1/inv_f);
               %ecc   = sqrt(1-(b/a)^2); 
 
-%         marsSpheroid.Name = 'MarsGeodeticApprx';
-%         marsSpheroid.LengthUnit = 'meter';
-%         marsSpheroid.SemimajorAxis     = wgs84Ellipsoid('meters').SemimajorAxis*0.532;
-%         marsSpheroid.SemiminorAxis     = wgs84Ellipsoid('meters').SemiminorAxis*0.531;
-%         marsSpheroid.InverseFlattening = wgs84Ellipsoid('meters').InverseFlattening*1.76;
-%         marsSpheroid.Eccentricity      = 0.1105; %wgs84Ellipsoid('meters').Eccentricity*
 
         [lat_rad, long_rad, ~] = ecef2geodetic(inputStruct.E*1e3, inputStruct.F*1e3, inputStruct.G*1e3, referenceEllipsoid('Mars'));      
         lat_deg = lat_rad*180/pi;
@@ -223,8 +206,6 @@ function [outputStruct] = ECEFtoRL_Convert(inputStruct)
         outputStruct.Vqe = Vqe;
         outputStruct.Vaz = Vaz;
         outputStruct.altitude = alt;
-
-        %outputStruct = RL_prep(outputStruct);
 
 end
 

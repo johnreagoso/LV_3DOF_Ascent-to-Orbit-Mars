@@ -3,8 +3,7 @@ classdef Mars_GenPhysCons
     % Mars_GenPhysCons
     % Created 25 Oct 2024, JReagoso
 
-    % Purpose: for use with flight dynamics tools (GA, optimizers) for Mars
-    % ascent flight trajectory design and analysis
+    % Purpose: for use with flight dynamics tools for Mars ascent flight trajectory propagation, design and analysis
 
     properties (Constant)
    

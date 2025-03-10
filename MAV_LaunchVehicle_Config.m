@@ -56,18 +56,18 @@ classdef MAV_LaunchVehicle_Config
 
     properties (Constant)
 
-        Cd = 0.6;
-        vArea = 0.196648; %m^2  0.25 meter radius/ 0.50 meter diameter
+        Cd = 0.6;           % estimated
+        vArea = 0.196648;   % m^2  0.25 meter radius/ 0.50 meter diameter
 
         %Dia = [0.5  0.5];      %  Outside diameter of each stage [m] Area = pi*Dia.^2/4;                   %  Cross-sectional area [m^2]
         %Area = pi*Dia.^2/4;
         
         %% Payload Metrics
-        payload  = 16;
+        payload  = 16; %kg 
         m_shroud = 0.0
                 
-        %% Stage Mass Metrics
-        % Stage-1 STAR-20G   Stage-2 STAR-15G 
+        %% Stage Mass Metrics   (GLOM- Gross Lift-Off Mass)
+        % Stage-1 STAR-20G   Stage-2 STAR-15G   
 
         % 450kg GLOM:
         stagemass = [373.2   60.8];         % Mass total of each stage [kg]
@@ -80,8 +80,6 @@ classdef MAV_LaunchVehicle_Config
         
         m_prop    = [213    47];            % Propellant mass of each stage [kg]
         % MFstage = m_prop./stagemass;      %  Mass fraction of each stage [0]  
-
-        
         
         %% Propulsion Metrics:
         stage1_burntime = 75.0 % sec
@@ -107,17 +105,5 @@ classdef MAV_LaunchVehicle_Config
         end
 
     end
-
-
-%     methods
-% 
-%         function LV_obj = propTraj(obj)
-% 
-% 
-% 
-%         end
-% 
-%     end
-
 
 end

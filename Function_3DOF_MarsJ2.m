@@ -13,7 +13,6 @@ aZ_UnitVec      = [0; 0; 1];
 mass = aStateInput(7);                                  
 
 aMarsRotVel = [0; 0; Mars_GenPhysCons.OMEGA];
-%aMarsRotVel = [0; 0; 0];
 
 Rvector = [aStateInput(1); aStateInput(2); aStateInput(3)];     %km
 Vvector = [aStateInput(4); aStateInput(5); aStateInput(6)];     %km/sec
@@ -112,6 +111,5 @@ function rho = mars_atm_density(altitude_km)  %alt in km(s)
 
 quant = 1149*temp + 528195.3;
 
-%rho = press/(1149*(temp + 459.7));  %slugs/ft^3
 rho = press/quant;  %slugs/ft^3
 end

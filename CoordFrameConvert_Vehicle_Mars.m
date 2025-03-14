@@ -5,7 +5,7 @@
 %                 Mars specific data
 
 % Note: this conversion script origin is for Earth centered trajectories (ECEF, ECI etc.). Any use of 'ECI', 'ECEF' etc. is a holdover 
-% and refers to MCI (Mars Centered Inertial) or MCMF (Mars Centered Mars Fixed) coordinate frames. Future versions of this script will
+% as this script is used for MCI (Mars Centered Inertial) or MCMF (Mars Centered Mars Fixed) coordinate frames. Future versions of this script will
 % be modified accordingly. 
 
 % Reference for Mars physical/gravity parameters:  https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html 
@@ -21,56 +21,10 @@ function [vehicleObj]= CoordFrameConvert_Vehicle_Mars(vehicleObjInput, frame_inp
 %     %% Mars Geodetic/Geocentric Constants: 
         
            inv_f = mars_const.inv_f;
-           % inv_f = 169.779286926995;
            a     = mars_const.RE_EQ*1.0e3; 
 %           %a    = Mars_GenPhysCons.RE_VL*1.0e3;              % aligned with LV_3DOF Mars gravity model (semi-major axis- equatorial radius- km)
             b    = a*(1-1/inv_f);      % Mars semi-minor axis (km)
            ecc   = sqrt(1-(b/a)^2);    % used for a non-spherical Mars model 
-%           % ecc = 0.00;                   % we're using a spherical Mars model..
-%     
-%% Dynamic Pressure/MaxQ Compute:
-%     %   load('stAtmConfig.mat'); %km - slug/ft^3
-%     %   for mmm = 1:numel(vehicleObj.time)
-%     %       atmRho_slugft3(mmm) = interp1(stAtmRhoProfile.ALT, stAtmRhoProfile.Rho, vehicleObj.altitude(mmm)); %#ok<AGROW> % converts slug/ft^3 --> lbf/ft^3
-%     %       vehicleObj.Q_psf(mmm,1) = 0.5*atmRho_slugft3(mmm)*(vehicleObj.speed(mmm)*3280.84)^2;                                   % converts km/sec to ft/sec
-%     %   end
-%     % 
-%     %   vehicleObj.MaxQ = max(vehicleObj.Q_psf); % lbf/ft2
-%     
-%     %% Are we using rotating Mars or not?
-%           vehicleObj.rotatingMars = vehicleObjInput.rotatingMars;
-%           
-%     %% Relative Local (RL) data (from LV_3DOF):
-%           vehicleObj.time      = vehicleObjInput.time;  
-%           vehicleObj.speed     = vehicleObjInput.speed;  
-%           vehicleObj.latitude  = vehicleObjInput.latitude;
-%           vehicleObj.longitude = vehicleObjInput.longitude;
-%           vehicleObj.altitude  = vehicleObjInput.altitude;
-%           vehicleObj.Vqe       = vehicleObjInput.Vqe;              % vertical FPA
-%           vehicleObj.Vaz       = vehicleObjInput.Vaz;
-%          vehicleObj.aoa(1:numel(vehicleObj.time),:) = 0.0;     % this AoA (pitch-down) data is a holdover/placeholder from the Ascent-to-Orbit 
-%                                                                 % analysis using a modified version of RotatingEart that provides inputs to 3rd stage burn thrust-angle(s). 
-%                                                                 
-%     %% Compute Range using Sodano's Method:
-%          vehicleObj.range_km = zeros(numel(vehicleObj.time),1);
-%          
-%          for kkk = 1:numel(vehicleObj.time)
-%             vehicleObj.range_km(kkk) = sodanosInverseMethod(vehicleObj.latitude(1), vehicleObj.longitude(1), vehicleObj.latitude(kkk), vehicleObj.longitude(kkk));
-%             if isnan(vehicleObj.range_km(kkk)) 
-%                 vehicleObj.range_km(kkk) = 0.00;
-%             end   
-%          end
-%          vehicleObj.range_nm = vehicleObj.range_km*0.539957;
-%          
-%     %% RL to NED Cartesian for Velocity and Acceleration:
-%            [vehicleObj.ned_dN, vehicleObj.ned_dE, vehicleObj.ned_dU] = sph2cart(vehicleObj.Vaz.*pi/180, vehicleObj.Vqe.*pi/180, vehicleObj.speed);   %km/sec
-%            vehicleObj.ned_dD = -vehicleObj.ned_dU;
-%            
-%            %   Using Matlab 'diff' functionality, we take the time derivative of NED velocity:
-%            vehicleObj.ned_ddN = diff(vehicleObj.ned_dN)./diff(vehicleObj.time);        %km/sec    
-%            vehicleObj.ned_ddE = diff(vehicleObj.ned_dE)./diff(vehicleObj.time);        %km/sec  
-%            vehicleObj.ned_ddD = diff(vehicleObj.ned_dD)./diff(vehicleObj.time);        %km/sec  
-%                   
    
 %% Call RL_to_ECEF Conversion subroutine:
         vehicleObj = RLtoECEF_Convert(vehicleObj);
@@ -92,7 +46,6 @@ function [vehicleObj]= CoordFrameConvert_Vehicle_Mars(vehicleObjInput, frame_inp
 %% Dynamic Pressure/ Max-Q Compuation:
 
   for mmm = 1:numel(vehicleObj.time)
-      %disp(vehicleObj.altitude(mmm));
 
       atmRho_slugft3(mmm)= mars_atm_density_kg_m3(vehicleObj.altitude(mmm)); %/515.4 ;
 
@@ -136,7 +89,6 @@ function [outputStruct] = RL_prep(vehicleObjInput)
           %a    = Mars_GenPhysCons.RE_VL*1.0e3;             
            b    = a*(1-1/inv_f);      % Mars semi-minor axis (km)
           ecc   = sqrt(1-(b/a)^2);    % used for a non-spherical Mars model 
-          % ecc = 0.00;                   % we're using a spherical Mars model..
     
           vehicleObj = vehicleObjInput;
 
@@ -264,7 +216,7 @@ function [outputStruct] = ECEFtoRL_Convert(inputStruct)
                         -sin(long_rad(ii))      cos(long_rad(ii))       0;...
                             -sin(lat_rad(ii))*cos(long_rad(ii))     -sin(lat_rad(ii))*sin(long_rad(ii))     cos(lat_rad(ii));];
                                 
-            VelNED{ii} = DCMecef2ned{ii}*[Vx(ii); Vy(ii); Vz(ii)];   %ecefVel = transpose(TewariDCM)*[Vn; Ve; Vd];
+            VelNED{ii} = DCMecef2ned{ii}*[Vx(ii); Vy(ii); Vz(ii)];  
             PosNED{ii} = DCMecef2ned{ii}*[Rx(ii); Ry(ii); Rz(ii)];
         end
     
@@ -338,8 +290,7 @@ function [outputStruct] = ECEFtoECI_Convert(inputStruct)
       
       inputStruct.eci_vel_norm = sqrt(inputStruct.dX.^2 + inputStruct.dY.^2 + inputStruct.dZ.^2);  
 
-      % Below equations below to a scheme used while at APL that directly converts ECEF 
-      % acceleration to ECI acceleration. Matches with TAOS output. 
+      % Below equations directly converts ECEF acceleration to ECI acceleration. Matches with TAOS math specification. 
       
       % Vehicle ECI acceleration compute:
       % ddEi = inputStruct.ddE - 2.*abs(marsRotRate).*inputStruct.dF(1:end-1) - ((abs(marsRotRate))^2).*inputStruct.E(1:end-1);
